@@ -20,12 +20,10 @@ class Games {
         fun runGame() {
             val random = Random.nextInt(0, 100)
 
-            runBlocking {
-                gameRunning = true
+            gameRunning = true
 
-                if (random >= 50) runType()
-                else runUnscramble()
-            }
+            if (random >= 50) runType()
+            else runUnscramble()
         }
 
         fun resetState() {
