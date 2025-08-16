@@ -20,7 +20,11 @@ class ChatGamesAdminCommand : BaseCommand() {
 
     @Subcommand("run")
     fun run(sender: CommandSender) {
-        Games.runGame()
-        sender.sendMessage { miniMessage { "<dark_green>Started random game" } }
+        if (!Games.gameRunning) {
+            Games.runGame()
+            sender.sendMessage { miniMessage { "<dark_green>Started random game" } }
+        } else {
+            sender.sendMessage { miniMessage { "<red>Game already running!" } }
+        }
     }
 }

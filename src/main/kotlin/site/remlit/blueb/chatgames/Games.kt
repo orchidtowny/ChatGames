@@ -7,6 +7,7 @@ import java.lang.Thread.sleep
 import java.time.Duration
 import java.time.LocalDateTime
 import kotlin.concurrent.thread
+import kotlin.random.Random
 
 class Games {
     companion object {
@@ -15,12 +16,13 @@ class Games {
         var startedAt: LocalDateTime? = null
 
         fun runGame() {
-            val random = /*Random.nextInt(0, 1)*/ 0
+            val random = Random.nextInt(0, 1)
 
             runBlocking {
                 gameRunning = true
                 when (random) {
-                    0 -> runUnscramble()
+                    0 -> runType()
+                    1 -> runUnscramble()
                 }
             }
         }
@@ -31,27 +33,29 @@ class Games {
             startedAt = null
         }
 
-        fun checkAnswer(attempt: String, player: Player) {
-            if (!gameRunning) return
-
-            ChatGames.instance.logger.info("Checking attempt by ${player.name}: $attempt")
+        fun checkAnswer(attempt: String, player: Player): Boolean {
+            if (!gameRunning) return false
 
             val now = LocalDateTime.now()
+            val duration = Duration.between(startedAt!!, now)
 
             if (
                 attempt == currentAnswer &&
                 startedAt != null &&
-                Duration.between(startedAt!!, now) > Duration.ofMillis(500)
+                duration > Duration.ofMillis(500)
             ) {
-                ChatGames.instance.logger.info("Game won by ${player.name}")
                 Config.broadcastWin.forEach { line ->
                     ChatGames.instance.server.broadcast(miniMessage {
                         line.replace("{player}", player.name)
+                            .replace("{sec}", "${duration.seconds}")
                             .replace("{answer}", currentAnswer!!)
                     })
                 }
                 resetState()
+                return true
             }
+
+            return false
         }
 
         private fun randomWord() = Config.getFinalWords().random()
@@ -63,7 +67,7 @@ class Games {
                 sleep(Config.duration * 1000L)
 
                 if (gameRunning && currentAnswer != null) {
-                    Config.broadcastUnscramble.forEach { line ->
+                    Config.broadcastFail.forEach { line ->
                         ChatGames.instance.server.broadcast(miniMessage {
                             line.replace("{answer}", currentAnswer!!)
                         })
@@ -72,6 +76,25 @@ class Games {
 
                 resetState()
             }
+        }
+
+        /* -- Games -- */
+
+        private fun runType() {
+            val answer = randomWord()
+
+            val time = Config.duration
+            ChatGames.instance.logger.info("Running type game for $time sec. Answer: $answer")
+
+            Config.broadcastType.forEach { line ->
+                ChatGames.instance.server.broadcast(miniMessage {
+                    line.replace("{sec}", "$time")
+                        .replace("{word}", answer)
+                })
+            }
+
+            currentAnswer = answer
+            startClock()
         }
 
         private fun runUnscramble() {

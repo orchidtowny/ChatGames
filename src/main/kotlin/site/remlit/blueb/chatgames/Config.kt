@@ -11,6 +11,11 @@ class Config {
         var includePlayerNames: Boolean = true
         var rewards: List<String> = emptyList<String>()
 
+        var broadcastType: List<String> = listOf(
+            "<white>",
+            "<yellow>You have {sec} sec to type: <blue>{word}",
+            "<white>"
+        )
         var broadcastUnscramble: List<String> = listOf(
             "<white>",
             "<yellow>You have {sec} sec to unscramble: <blue>{unscramble}",
@@ -51,6 +56,11 @@ class Config {
             config.addDefault("include-player-names", true)
             config.addDefault("rewards", listOf("25;points give {player} 1"))
 
+            config.addDefault("broadcast.type", listOf(
+                "<white>",
+                "<yellow>You have {sec} sec to type: <blue>{word}",
+                "<white>"
+            ))
             config.addDefault("broadcast.unscramble", listOf(
                 "<white>",
                 "<yellow>You have {sec} sec to unscramble: <blue>{unscramble}",
@@ -85,6 +95,7 @@ class Config {
             duration = config.getInt("duration")
             includePlayerNames = config.getBoolean("include-player-names")
             rewards = config.getStringList("rewards")
+            broadcastType = config.getStringList("broadcast.type")
             broadcastUnscramble = config.getStringList("broadcast.unscramble")
             broadcastWin = config.getStringList("broadcast.win")
             broadcastFail = config.getStringList("broadcast.fail")

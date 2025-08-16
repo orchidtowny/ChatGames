@@ -9,7 +9,7 @@ class EventListener : Listener {
     @EventHandler
     fun onAsyncChatEvent(e: AsyncChatEvent) {
         if (e.isCancelled) return
-        Games.checkAnswer(PlainTextComponentSerializer.plainText().serialize(e.message()), e.player)
+        if (Games.checkAnswer(PlainTextComponentSerializer.plainText().serialize(e.message()), e.player)) e.isCancelled = true
     }
 
     companion object {
