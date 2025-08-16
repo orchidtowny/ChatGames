@@ -9,7 +9,7 @@ class Config {
         var interval: Int = 30 // min
         var duration: Int = 30 // sec
         var includePlayerNames: Boolean = true
-        var rewards: List<String> = emptyList<String>()
+        var rewards: List<String> = listOf("", "", "", "", "points give {player} 1")
 
         var broadcastType: List<String> = listOf(
             "<white>",
@@ -54,7 +54,7 @@ class Config {
             config.addDefault("interval", 30)
             config.addDefault("duration", 30)
             config.addDefault("include-player-names", true)
-            config.addDefault("rewards", listOf("25;points give {player} 1"))
+            config.addDefault("rewards", listOf("", "", "", "", "points give {player} 1"))
 
             config.addDefault("broadcast.type", listOf(
                 "<white>",

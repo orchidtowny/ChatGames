@@ -1,6 +1,8 @@
 package site.remlit.blueb.chatgames
 
 import kotlinx.coroutines.runBlocking
+import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import site.remlit.blueb.chatgames.util.inline.miniMessage
 import java.lang.Thread.sleep
@@ -16,14 +18,13 @@ class Games {
         var startedAt: LocalDateTime? = null
 
         fun runGame() {
-            val random = Random.nextInt(0, 1)
+            val random = Random.nextInt(0, 100)
 
             runBlocking {
                 gameRunning = true
-                when (random) {
-                    0 -> runType()
-                    1 -> runUnscramble()
-                }
+
+                if (random >= 50) runType()
+                else runUnscramble()
             }
         }
 
@@ -51,6 +52,13 @@ class Games {
                             .replace("{answer}", currentAnswer!!)
                     })
                 }
+
+                val rewardCommand = Config.rewards.random().replace("{player}", player.name)
+                if (!rewardCommand.isBlank())
+                    Bukkit.getScheduler().runTask(ChatGames.instance, Runnable {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), rewardCommand)
+                    })
+
                 resetState()
                 return true
             }
