@@ -1,0 +1,7 @@
+name: ChatGames
+version: '2025.8.1.0'
+main: site.remlit.blueb.chatgames.ChatGames
+paper-plugin-loader: site.remlit.blueb.chatgames.ChatGamesPluginLoader
+api-version: '1.19'
+load: POSTWORLD
+authors: [ blueb ]
