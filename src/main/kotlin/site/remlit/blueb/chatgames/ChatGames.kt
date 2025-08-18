@@ -16,8 +16,10 @@ class ChatGames : JavaPlugin() {
         EventListener.register()
 
         thread(name = "ChatGames Background Thread") {
-            sleep(Config.interval * 60 * 1000L)
-            Games.runGame()
+            while (!Thread.interrupted()) {
+                sleep(Config.interval * 60 * 1000L)
+                Games.runGame()
+            }
         }
     }
 
